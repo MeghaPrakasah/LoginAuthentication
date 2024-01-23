@@ -2,8 +2,9 @@
 const http = require('http')
 
 const express = require('express');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const app = express();
+const authRoutes = require('./Routes/auth');
 
 mongoose .connect('mongodb://localhost:27017' ,{
     useNewUrlParser : true,
@@ -15,6 +16,8 @@ mongoose .connect('mongodb://localhost:27017' ,{
     console.log(err);
 });
 
+app.use(express.json());
+app.use('/auth',authRoutes);
 
 
 
