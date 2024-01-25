@@ -53,6 +53,34 @@ router.post('/login',async(req,res)=>{
 });
 
 
+router.post('/forgotPassword', async(req,res)=>{
+    try {
+        const {username,password} = req.body;
+        const user = await User.findOne({
+            user:username
+        })
+        // console.log(user);
+        if (user) {
+
+            const updatedPassword = await User.findByIdAndUpdate(user._id, {password:password}, {
+                new:true
+            });
+            
+            return res.status(200).json({message : "Upadated"});
+        }
+
+
+
+
+
+        res.status(200);
+    } catch (error) {
+        console.log(error)
+        
+    }
+})
+
+
 
 
 module.exports = router;
