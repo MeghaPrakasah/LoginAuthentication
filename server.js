@@ -5,8 +5,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const authRoutes = require('./Routes/auth');
+const protectedRoutes = require('./Routes/protectedRoutes')
 
-mongoose .connect('mongodb://localhost:27017' ,{
+mongoose .connect('mongodb://localhost:27017/JWT' ,{
     useNewUrlParser : true,
     useUnifiedTopology : true
 })
@@ -19,7 +20,7 @@ mongoose .connect('mongodb://localhost:27017' ,{
 app.use(express.json());
 app.use('/auth',authRoutes);
 
-
+app.use('/protected',protectedRoutes);
 
 const port = 3000 ;
 app.listen(port,()=>{

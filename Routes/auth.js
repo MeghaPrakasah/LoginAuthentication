@@ -3,6 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../Model/user');
+const Admin = require('../Model/user');
 const router = express.Router();
 
 //user registrartion
@@ -51,6 +52,59 @@ router.post('/login',async(req,res)=>{
         //res.status(500).json({error : "Login faild"});
     }
 });
+
+
+//admin resister
+
+router.post('/admin-register',async(req,res)=>{
+    try {
+        const {username,password} = req.body;
+        const hashedPassword = await bcrypt.hash(password,10);
+        const admin = new Admin({
+            user : username ,
+            password : hashedPassword
+        });
+        await admin.save();
+        res.status(201).json({message : "Admin created successfully"});
+    } 
+    catch (error) {
+        console.log(error)
+       // res.status(500).json({error : "Registration faild"});
+    }
+});
+
+
+//admin login
+
+
+router.post('/login-admin',async(req,res)=>{
+    try {
+        const {username,password} = req.body;
+        const admin = await Admin.findOne({
+            user:username
+        })
+        if(!admin){
+            return res.status(401).json({error : "Login failed"});
+        }
+
+        const passwordMatch = await bcrypt.compare(password,user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({error : "Invalid Password match"});
+        }
+        
+        const token = jwt.sign({userId : admin._id },"secretKey",{expiresIn : '1h'});
+
+        res.status(200).json({token});
+    } 
+    catch (error) {
+       console.log(error)
+        //res.status(500).json({error : "Login faild"});
+    }
+});
+
+
+
 
 
 router.post('/forgotPassword', async(req,res)=>{
